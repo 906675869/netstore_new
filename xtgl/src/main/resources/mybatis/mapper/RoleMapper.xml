@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.parent.xtgl.mapper.RoleMapper" >
+
+    <resultMap id="BaseResultMap" type="com.parent.xtgl.entity.Role" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="usrId" property="usrId" jdbcType="INTEGER" />
+        <result column="des" property="desc" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+        role.id, role.usrid, role.des
+    </sql>
+
+    <select id="getAll" resultMap="BaseResultMap"  >
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM role
+    </select>
+
+    <select id="getOne" parameterType="java.lang.Integer" resultMap="BaseResultMap" >
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM role
+        WHERE id = #{id}
+    </select>
+
+    <select id="getRolesByUser" parameterType="com.parent.xtgl.entity.User" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM role
+        LEFT JOIN user ON role.usrid = user.id
+        WHERE user.id = #{id}
+    </select>
+
+    <insert id="insert" parameterType="com.parent.xtgl.entity.Role" >
+        INSERT INTO
+        role
+        (
+        <include refid="Base_Column_List" />
+        )
+        VALUES
+        (#{id},#{usrid}, #{des})
+    </insert>
+
+    <update id="update" parameterType="com.parent.xtgl.entity.Role" >
+        UPDATE
+        role
+        SET
+        <if test="name != null">usrid = #{usrid},</if>
+        des = #{des}
+        WHERE
+        id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Integer" >
+        DELETE FROM
+        role
+        WHERE
+        id =#{id}
+    </delete>
+
+</mapper>

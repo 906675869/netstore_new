@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.parent.xtgl.mapper.FunctionMapper" >
+
+    <resultMap id="BaseResultMap" type="com.parent.xtgl.entity.Function" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="roleId" property="roleId" jdbcType="INTEGER" />
+        <result column="url" property="url" jdbcType="VARCHAR" />
+        <result column="des" property="des" jdbcType="VARCHAR" />
+    </resultMap>
+
+
+    <sql id="Base_Column_List" >
+        Function.id, Function.roleId,Function.url,Function.des
+    </sql>
+
+    <select id="getAll" resultMap="BaseResultMap"  >
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM function
+    </select>
+
+    <select id="getOne" parameterType="java.lang.Integer" resultMap="BaseResultMap" >
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM function
+        WHERE id = #{id}
+    </select>
+
+    <select id="getFunctionsByRole" parameterType="com.parent.xtgl.entity.Role" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM function
+        LEFT JOIN role ON function.roleId = role.id
+        where role.id = #{id}
+    </select>
+
+    <select id="getFunctionsByUser" parameterType="com.parent.xtgl.entity.User" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM function
+        LEFT JOIN role ON function.roleId = role.id
+        LEFT JOIN user ON role.usrId = user.id
+        where user.id = #{id}
+    </select>
+
+    <insert id="insert" parameterType="com.parent.xtgl.entity.Function" >
+        INSERT INTO
+        function
+        (<include refid="Base_Column_List" />)
+        VALUES
+        (#{id},#{roleId}, #{url},#{des})
+    </insert>
+
+    <update id="update" parameterType="com.parent.xtgl.entity.Function" >
+        UPDATE
+        function
+        SET
+        <if test="roleId != null">roleId = #{roleId},</if>
+        <if test="url != null">url = #{url},</if>
+        des = #{des}
+        WHERE
+        id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Integer" >
+        DELETE FROM
+        function
+        WHERE
+        id =#{id}
+    </delete>
+
+</mapper>
